@@ -1,0 +1,169 @@
+0 lw $2 256 //read switch
+1 lw $4 258 //read the right button unpush state
+nop 
+nop
+nop
+nop
+2 lw $10 257 //read the left button unpush state
+nop 
+nop
+nop
+nop
+3 lui $13 15 //the upper limited number of the inserted coins
+4 lui $1 15 //security code is 2'b1111
+nop 
+nop
+nop
+nop
+sw $13 10 // store value from $13 into location 10 of data memory
+nop 
+nop
+nop
+nop
+sw $1  11 // store value from $1 into location 11 of data memory
+nop 
+nop
+nop
+nop
+lw $13 10
+nop 
+nop
+nop
+nop
+lw $1 11
+nop 
+nop
+nop
+nop
+5 closed: lui $9 3 //the unit price of a gum
+nop 
+nop
+nop
+nop
+6 lw $2 256 //read switch 
+nop 
+nop
+nop
+nop
+7 lui $8 1
+8 lui $7 1
+9 bne $1 $2 closed //check the switch code
+10 nop
+11 nop
+12 nop
+13 nop
+14 lui $3 15 //reset the value of LEDs display register
+15 nop
+16 nop
+17 nop
+18 lw $11 257 //read the current left button state
+19 sw $3 0 //supply $3 value to LEDs display
+20 nop
+21 nop
+22 nop
+23 beq $11 $10 closed //check the left button state, if (same==unpushed) go back to "closed" else
+24 nop
+25 nop
+26 nop
+27 nop
+28 lui $3 0 //reset the value of LEDs display register
+29 nop
+30 nop
+31 nop
+32 lui $5 10000 //counter for a 10-second reset
+33 sw $3 0 //supply $3 value to LEDs display
+34 ready: lui $8 1000 //counter for right button input
+35 coin: lw $6 258 //read current right button state
+36 nop
+37 nop
+38 nop
+39 sub $8 $8 $7 //decrement $8 by 1
+40 bne $4 $6 nickel //check the right button state, if (same==unpushed) go back to "coin" els
+41 nop
+42 nop
+43 nop
+44 nop
+45 beq $8 $0 ready //if (counter==0) go back to "ready" else continue....
+46 nop
+47 nop
+48 nop
+49 nop
+50 lw $11 257 //read the current left button state
+51 nop
+52 nop
+53 nop
+54 nop
+55 bne $11 $10 buy //if (left button pushed) go to "buy" else continue....
+56 nop
+57 nop
+58 nop
+59 nop
+60 sub $5 $5 $7 //decrement $5 by 1
+61 nop
+62 nop
+63 nop
+64 nop
+65 beq $5 $0 closed //if (10-second counter==0") go to "closed" else continue....
+66 nop
+67 nop
+68 nop
+69 nop
+70 jump coin //go to "coin"
+71 nop
+72 nop
+73 nop
+74 nop
+75 nickel: lui $8 1000 //reset the counter for right button
+76 lui $5 10000 //counter for a 10-second reset
+77 slt $14 $13 $3 //check $3 < 15 or not
+78 nop
+79 nop
+80 nop
+81 nop
+82 beq $14 $7 overflow //if $3 > 15 go to "overflow"
+83 nop
+84 nop
+85 nop
+86 nop
+87 add $3 $3 $7 //increment $3 by 1 when the right button is pushed
+88 nop
+89 nop
+90 nop
+91 nop
+92 sw $3 0 //supply $3 value to LEDs display
+93 jump coin ////go to "coin"
+94 nop
+95 nop
+96 nop
+97 nop
+98 overflow: lui $5 10000 //counter for 10 seconds reset
+99 lui $8 1000 //reset the counter for the right button
+100 sw $3 0 //supply $3 value to LEDs display
+101 jump coin //keep the current value of coin even overflow and go to "coin"
+102 nop
+103 nop
+104 nop
+105 nop
+106 buy: lui $8 1000 //reset the counter for the right button
+107 lui $5 10000 // reset
+108 slt $12 $3 $9    //
+109 nop
+110 nop
+111 nop
+112 nop
+113 beq $12 $7 coin //not enough coin to purchase  < 3
+114 nop
+115 nop
+116 nop
+117 nop
+118 sub $3 $3 $9 //decrement by 3 from #3 after purchasing
+119 nop
+120 nop
+121 nop
+122 nop
+123 sw $3 0 //supply $3 value to LEDs display
+124 jump coin //go to "coin"
+125 nop
+126 nop
+127 nop
+128 nop
